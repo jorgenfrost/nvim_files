@@ -9,6 +9,9 @@ Plug 'easymotion/vim-easymotion'
 " Git wrapper
 Plug 'tpope/vim-fugitive'
 
+" Git gutter
+Plug 'airblade/vim-gitgutter'
+
 " gof for open current file in file manager
 Plug 'justinmk/vim-gtfo'
 
@@ -16,6 +19,9 @@ Plug 'justinmk/vim-gtfo'
 Plug 'easymotion/vim-easymotion'
 Plug 'haya14busa/incsearch.vim'
 Plug 'haya14busa/incsearch-easymotion.vim'
+
+" send lines to interpreter
+Plug 'jalvesaq/vimcmdline'
 
 " modeline 
 Plug 'vim-airline/vim-airline'
@@ -36,20 +42,19 @@ Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'sirver/ultisnips'
 Plug 'honza/vim-snippets'
 
+" file navi
+Plug 'preservim/nerdtree'
+
 " colors
-Plug 'ewilazarus/preto'
-Plug 'connorholyday/vim-snazzy'
+Plug 'sjl/badwolf'
 Plug 'ayu-theme/ayu-vim'
-Plug 'tomasr/molokai'
-Plug 'chriskempson/vim-tomorrow-theme'
-Plug 'morhetz/gruvbox'
-  let g:gruvbox_contrast_dark = 'soft'
-
+Plug 'reedes/vim-colors-pencil'
 Plug 'lifepillar/vim-solarized8'
-
-Plug 'cocopon/iceberg.vim'
-Plug 'arcticicestudio/nord-vim'
-Plug 'nightsense/cosmic_latte'
+Plug 'pbrisbin/vim-colors-off' " no colors
+Plug 'pgdouyon/vim-yin-yang' " no colors
+Plug 'huyvohcmc/atlas.vim' " no colors
+Plug 'KKPMW/distilled-vim' " little colors
+Plug 'chriskempson/base16-vim'
 
 " swissknife for vim and R communication
 Plug 'jalvesaq/Nvim-R'
@@ -64,7 +69,8 @@ Plug 'chrisbra/csv.vim' "for viewing data directly in vim R (Nvim-R)
 Plug 'junegunn/goyo.vim' 
 
 " Plug fzf
-Plug 'junegunn/fzf'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 
 " Initialize plugin system
 call plug#end()
@@ -109,7 +115,7 @@ let r_indent_ess_comments = 0
 " let r_indent_ess_compatible = 0
 
 " ######## TRICKS #######
-let maplocalleader="\<space>"
+let maplocalleader="\<Space>"
 let mapleader="\<Space>"
 
 " Set a unite leader:
@@ -133,7 +139,6 @@ map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
 
 " Setup better incremental search w. incsearch
-map /  <Plug>(incsearch-forward)
 map ?  <Plug>(incsearch-backward)
 map g/ <Plug>(incsearch-stay)
 
@@ -148,7 +153,7 @@ map g* <Plug>(incsearch-nohl-g*)
 map g# <Plug>(incsearch-nohl-g#)
 
 " make it like easymotion
-map z/ <Plug>(incsearch-easymotion-/)
+map / <Plug>(incsearch-easymotion-/)
 map z? <Plug>(incsearch-easymotion-?)
 map zg/ <Plug>(incsearch-easymotion-stay)
 
@@ -183,10 +188,36 @@ noremap <Down> <NOP>
 noremap <Left> <NOP>
 noremap <Right> <NOP>
 
+" remap :FZF to ctrl-P 
+nnoremap <silent> <C-p> :call fzf#vim#files('.', {'options': '--prompt ""'})<CR>
+nnoremap <silent> <leader>b :Buffers<CR>
+
+" remap vimcmdline mappings
+let cmdline_map_start          = '<LocalLeader>s'
+let cmdline_map_send           = '<Space>,'
+let cmdline_map_send_and_stay  = '<LocalLeader><Space>'
+let cmdline_map_source_fun     = '<LocalLeader>f'
+let cmdline_map_send_paragraph = '<LocalLeader>p'
+let cmdline_map_send_block     = '<LocalLeader>b'
+let cmdline_map_quit           = '<LocalLeader>q'
+let cmdline_map_start          = '<Space>s'
+let cmdline_map_send           = '<Space>'
+
 " colors
 set termguicolors
 set t_Co=256   " This is may or may not needed.
 let ayucolor="dark"   " for dark version of theme
-set background=light
-colorscheme solarized8
+" set background=light
+colorscheme base16-default-dark
 set nu
+
+function! s:goyo_enter()
+    colorscheme pencil
+endfunction
+
+function! s:goyo_leave()
+    colorscheme base16-default-dark
+endfunction
+
+autocmd! User GoyoEnter nested call <SID>goyo_enter()
+autocmd! User GoyoLeave nested call <SID>goyo_leave()
